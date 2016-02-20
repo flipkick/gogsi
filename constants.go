@@ -22,24 +22,24 @@ type (
 // Known state constants
 const (
 	StateUndefined      DotaGameState = ""
-	StateDisconnect                   = "DOTA_GAMERULES_STATE_DISCONNECT"
-	StateGameInProgress               = "DOTA_GAMERULES_STATE_GAME_IN_PROGRESS"
-	StateHeroSelection                = "DOTA_GAMERULES_STATE_HERO_SELECTION"
-	StateInit                         = "DOTA_GAMERULES_STATE_INIT"
-	StateLast                         = "DOTA_GAMERULES_STATE_LAST"
-	StatePostGame                     = "DOTA_GAMERULES_STATE_POST_GAME"
-	StatePreGame                      = "DOTA_GAMERULES_STATE_PRE_GAME"
-	StateStrategyTime                 = "DOTA_GAMERULES_STATE_STRATEGY_TIME"
-	StateWaitForPlayers               = "DOTA_GAMERULES_STATE_WAIT_FOR_PLAYERS"
+	StateDisconnect     DotaGameState = "DOTA_GAMERULES_STATE_DISCONNECT"
+	StateGameInProgress DotaGameState = "DOTA_GAMERULES_STATE_GAME_IN_PROGRESS"
+	StateHeroSelection  DotaGameState = "DOTA_GAMERULES_STATE_HERO_SELECTION"
+	StateInit           DotaGameState = "DOTA_GAMERULES_STATE_INIT"
+	StateLast           DotaGameState = "DOTA_GAMERULES_STATE_LAST"
+	StatePostGame       DotaGameState = "DOTA_GAMERULES_STATE_POST_GAME"
+	StatePreGame        DotaGameState = "DOTA_GAMERULES_STATE_PRE_GAME"
+	StateStrategyTime   DotaGameState = "DOTA_GAMERULES_STATE_STRATEGY_TIME"
+	StateWaitForPlayers DotaGameState = "DOTA_GAMERULES_STATE_WAIT_FOR_PLAYERS"
 
 	TeamUndefined DotaTeam = ""
-	TeamNone               = "none"
-	TeamDire               = "dire"
-	TeamRadiant            = "radiant"
+	TeamNone      DotaTeam = "none"
+	TeamDire      DotaTeam = "dire"
+	TeamRadiant   DotaTeam = "radiant"
 
 	ActivityUndefined PlayerActivity = ""
-	ActivityMenu                     = "menu"
-	ActivityPlaying                  = "playing"
+	ActivityMenu      PlayerActivity = "menu"
+	ActivityPlaying   PlayerActivity = "playing"
 
 	RuneNone RuneType = ""
 )

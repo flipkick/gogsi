@@ -1,5 +1,7 @@
 package gogsi
 
+import "time"
+
 type (
 	// State contains all available information about the current state of a Dota 2 game at a given
 	// moment in time. Previous and Added are deltas since the last State (Added contains all new values,
@@ -20,14 +22,14 @@ type (
 	Map struct {
 		Name                 string        `json:"name"`
 		MatchID              int           `json:"matchid"`
-		GameTime             Time          `json:"game_time"`
-		ClockTime            Time          `json:"clock_time"`
+		GameTime             time.Duration `json:"game_time"`
+		ClockTime            time.Duration `json:"clock_time"`
 		Day                  bool          `json:"daytime"`
 		NightstalkerNight    bool          `json:"nightstalker_night"`
 		GameState            DotaGameState `json:"game_state"`
 		WinTeam              DotaTeam      `json:"win_team"`
 		CustomGameName       string        `json:"customgamename"`
-		WardPurchaseCooldown Duration      `json:"ward_purchase_cooldown"`
+		WardPurchaseCooldown time.Duration `json:"ward_purchase_cooldown"`
 	}
 
 	// Player provides information about the Steam/Dota user currently logged in to the client.
@@ -75,10 +77,10 @@ type (
 
 	// Provider holds Steam-related metadata about the app currently in use (Dota 2).
 	Provider struct {
-		Name      string `json:"name"`
-		AppID     int    `json:"appid"`
-		Version   int    `json:"version"`
-		Timestamp Time   `json:"timestamp"`
+		Name      string    `json:"name"`
+		AppID     int       `json:"appid"`
+		Version   int       `json:"version"`
+		Timestamp time.Time `json:"-"`
 	}
 
 	// Auth holds the token set in the integration's configuration file (a shared key is easiest).
@@ -88,7 +90,7 @@ type (
 	}
 )
 
-// GoldAfterDeath returns the amount of gold the player would have if there hero were to die. Will not work
+// GoldAfterDeath returns the amount of gold the player would have if their hero were to die. Will not work
 // properly in custom games.
 func (s *State) GoldAfterDeath() int {
 	if s == nil || s.Hero == nil || s.Player == nil {

@@ -7,115 +7,6 @@ import (
 	"github.com/fatih/structs"
 )
 
-type (
-	// Time wraps the time.Time struct, providing JSON deserialization from a JSON int as epoch seconds.
-	Time struct {
-		time.Time
-	}
-
-	// Duration wraps time.Duration, providing JSON deserialization on the assumption that a JSON int
-	// is a number of seconds.
-	Duration struct {
-		time.Duration
-	}
-)
-
-// UnmarshalJSON implements the json.Unmarshaler interface for Time, allowing it to deserialize from an
-// epoch time int.
-func (t *Time) UnmarshalJSON(b []byte) error {
-	var i int64
-	if err := json.Unmarshal(b, &i); err != nil {
-		return err
-	}
-
-	t.Time = time.Unix(i, 0)
-	return nil
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for Duration, allowing it to be deserialized
-// from a JSON int interpreted as a number of seconds.
-func (d *Duration) UnmarshalJSON(b []byte) error {
-	var t time.Duration
-	if err := json.Unmarshal(b, &t); err != nil {
-		return err
-	}
-
-	d.Duration = t * time.Second
-	return nil
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for DotaGameState, ensuring that all types resolve
-// to the 'enum' values.
-func (d *DotaGameState) UnmarshalJSON(b []byte) error {
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-
-	switch s {
-	case StateDisconnect, StateGameInProgress, StateHeroSelection, StateInit, StateLast, StatePostGame,
-		StatePreGame, StateStrategyTime, StateWaitForPlayers:
-	default:
-		*d = StateUndefined
-	}
-
-	*d = DotaGameState(s)
-	return nil
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for DotaTeam, ensuring that all types resolve to the
-// 'enum' values.
-func (d *DotaTeam) UnmarshalJSON(b []byte) error {
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-
-	switch s {
-	case TeamDire, TeamNone, TeamRadiant:
-	default:
-		*d = TeamUndefined
-	}
-
-	*d = DotaTeam(s)
-	return nil
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for RuneType, ensuring that all types resolve to the
-// 'enum' values.
-func (d *RuneType) UnmarshalJSON(b []byte) error {
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-
-	switch s {
-	default:
-		*d = RuneNone
-	}
-
-	*d = RuneType(s)
-	return nil
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for PlayerActivity, ensuring that all types resolve to
-// the 'enum' values.
-func (d *PlayerActivity) UnmarshalJSON(b []byte) error {
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-
-	switch s {
-	case ActivityMenu, ActivityPlaying:
-	default:
-		*d = ActivityUndefined
-	}
-
-	*d = PlayerActivity(s)
-	return nil
-}
-
 // UnmarshalJSON implements the json.Unmarshaler interface for Player, allowing us
 // to segregate GameStats from metadata (SteamID, Name, Activity).
 func (p *Player) UnmarshalJSON(b []byte) error {
@@ -154,6 +45,100 @@ func (p *Player) UnmarshalJSON(b []byte) error {
 
 	return nil
 }
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Ability in order to handle custom time.Duration
+// deserialization.
+func (a *Ability) UnmarshalJSON(b []byte) error {
+	if err := json.Unmarshal(b, a); err != nil {
+		return err
+	}
+
+	a.Cooldown *= time.Second
+	return nil
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Item in order to handle custom time.Duration
+// deserialization.
+func (i *Item) UnmarshalJSON(b []byte) error {
+	if err := json.Unmarshal(b, i); err != nil {
+		return err
+	}
+	i.Cooldown *= time.Second
+	return nil
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Hero in order to handle custom time.Duration
+// deserialization.
+func (h *Hero) UnmarshalJSON(b []byte) error {
+	if err := json.Unmarshal(b, h); err != nil {
+		return err
+	}
+	h.BuybackCooldown *= time.Second
+	h.Respawn *= time.Second
+	return nil
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Provider in order to handle custom time.Duration
+// deserialization.
+func (p *Provider) UnmarshalJSON(b []byte) error {
+	if err := json.Unmarshal(b, p); err != nil {
+		return err
+	}
+
+	var t struct {
+		time.Time `json:"timestamp"`
+	}
+	if err := json.Unmarshal(b, &t); err != nil {
+		return err
+	}
+
+	p.Timestamp = t.Time
+
+	return nil
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Map in order to handle custom time.Duration
+// deserialization.
+func (m *Map) UnmarshalJSON(b []byte) error {
+	if err := json.Unmarshal(b, m); err != nil {
+		return err
+	}
+	m.ClockTime *= time.Second
+	m.GameTime *= time.Second
+	m.WardPurchaseCooldown *= time.Second
+	return nil
+}
+
+type (
+	// abilityIntermediate matches the structure we receive from Dota. It is decoded
+	// and transformed to an Abilities struct.
+	abilityIntermediate struct {
+		Ability1 *Ability    `json:"ability0,omitempty"`
+		Ability2 *Ability    `json:"ability1,omitempty"`
+		Ability3 *Ability    `json:"ability2,omitempty"`
+		Ability4 *Ability    `json:"ability3,omtiempty"`
+		Ability5 *Ability    `json:"ability4,omitempty"`
+		Ability6 *Ability    `json:"ability5,omitempty"`
+		Attr     *Attributes `json:"attributes,omitempty"`
+	}
+
+	// itemIntermediate matches the structure we receive from Dota. It is decoded
+	// and transformed to an Items struct.
+	itemIntermediate struct {
+		Item1  *Item `json:"slot0,omitempty"`
+		Item2  *Item `json:"slot1,omitempty"`
+		Item3  *Item `json:"slot2,omitempty"`
+		Item4  *Item `json:"slot3,omtiempty"`
+		Item5  *Item `json:"slot4,omitempty"`
+		Item6  *Item `json:"slot5,omitempty"`
+		Stash1 *Item `json:"stash0,omitempty"`
+		Stash2 *Item `json:"stash1,omitempty"`
+		Stash3 *Item `json:"stash2,omitempty"`
+		Stash4 *Item `json:"stash3,omitempty"`
+		Stash5 *Item `json:"stash4,omitempty"`
+		Stash6 *Item `json:"stash5,omitempty"`
+	}
+)
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Abilities. This is implemented
 // custom because the incoming format from Valve is different from the gogsi representation.
