@@ -116,7 +116,7 @@ type (
 		Ability1 *Ability    `json:"ability0,omitempty"`
 		Ability2 *Ability    `json:"ability1,omitempty"`
 		Ability3 *Ability    `json:"ability2,omitempty"`
-		Ability4 *Ability    `json:"ability3,omtiempty"`
+		Ability4 *Ability    `json:"ability3,omitempty"`
 		Ability5 *Ability    `json:"ability4,omitempty"`
 		Ability6 *Ability    `json:"ability5,omitempty"`
 		Attr     *Attributes `json:"attributes,omitempty"`
@@ -128,7 +128,7 @@ type (
 		Item1  *Item `json:"slot0,omitempty"`
 		Item2  *Item `json:"slot1,omitempty"`
 		Item3  *Item `json:"slot2,omitempty"`
-		Item4  *Item `json:"slot3,omtiempty"`
+		Item4  *Item `json:"slot3,omitempty"`
 		Item5  *Item `json:"slot4,omitempty"`
 		Item6  *Item `json:"slot5,omitempty"`
 		Stash1 *Item `json:"stash0,omitempty"`

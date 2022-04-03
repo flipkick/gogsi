@@ -14,7 +14,7 @@ type (
 		*Hero      `json:"hero,omitempty"`
 		*Abilities `json:"abilities,omitempty"`
 		*Items     `json:"items,omitempty"`
-		Previous   *State `json:"added,omitempty"`
+		Previous   *State `json:"previous,omitempty"`
 		Added      *State `json:"added,omitempty"`
 	}
 
